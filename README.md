@@ -2,12 +2,15 @@
 
 A professional web-based tool that provides a real-time visual presentation of the **Bubble Sort** algorithm. This project demonstrates how elements "bubble up" to their correct positions through animated transitions.
 
-## 🛠️ Tech Stack
+# 🚀 Live Demo 
+https://tazhalli5.github.io/Sort-Visualizer-/
+
+# 🛠️ Tech Stack
 * **HTML5** — Structure
 * **CSS3** — Styling & Animations
 * **JavaScript (ES6)** — Sorting Logic
 
-## 📂 Project Structure
+#  📂 Project Structure
 ```text
 ├── index.html   # Main UI structure
 ├── style.css    # Visual styling and layout
