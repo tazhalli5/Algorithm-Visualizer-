@@ -146,56 +146,62 @@ async function merge(start, mid, end) {
         k++;
     }
 }
-
-async function quickSort() {
-    let bars = document.getElementsByClassName("bar");
-    await qSort(0, array.length - 1, bars);
-    // Success finish
-    for (let i = 0; i < bars.length; i++) {
-        bars[i].style.backgroundColor = "#10b981";
+/**
+ * Quick Sort Implementation with Visualization
+ * @param {Array} rects - The DOM elements representing the bars
+ * @param {number} left - Starting index
+ * @param {number} right - Ending index
+ */
+async function quickSort(rects, left, right) {
+    if (left < right) {
+        // Find the partition index
+        let pivotIndex = await partition(rects, left, right);
+        
+        // Recursively sort elements before and after partition
+        await quickSort(rects, left, pivotIndex - 1);
+        await quickSort(rects, pivotIndex + 1, right);
+    }
+    // Once finished, ensure all bars are the primary color
+    if (left === 0 && right === rects.length - 1) {
+        rects.forEach(rect => rect.style.backgroundColor = "#7582f4");
     }
 }
 
-async function qSort(start, end, bars) {
-    if (start >= end) return;
+async function partition(rects, left, right) {
+    // Picking the rightmost element as pivot
+    let pivotValue = parseInt(rects[right].style.height);
+    rects[right].style.backgroundColor = "red"; // Highlight Pivot
 
-    let index = await partition(start, end, bars);
-    
-    // Reset pivot color before moving to next segment
-    bars[index].style.backgroundColor = "#10b981"; 
+    let i = left - 1;
 
-    await qSort(start, index - 1, bars);
-    await qSort(index + 1, end, bars);
-}
+    for (let j = left; j < right; j++) {
+        // Highlight current comparison
+        rects[j].style.backgroundColor = "yellow";
+        
+        // Delay for visualization based on your speed slider
+        await new Promise(resolve => setTimeout(resolve, speed));
 
-async function partition(start, end, bars) {
-    let pivotValue = array[end];
-    let pivotIndex = start;
-    
-    // Highlight the pivot in RED
-    bars[end].style.backgroundColor = "#ef4444"; 
-
-    for (let i = start; i < end; i++) {
-        // Highlight the scanning bar in YELLOW
-        bars[i].style.backgroundColor = "#f59e0b"; 
-        await sleep();
-
-        if (array[i] < pivotValue) {
-            [array[i], array[pivotIndex]] = [array[pivotIndex], array[i]];
-            bars[i].style.height = `${array[i]}px`;
-            bars[pivotIndex].style.height = `${array[pivotIndex]}px`;
-            pivotIndex++;
+        if (parseInt(rects[j].style.height) < pivotValue) {
+            i++;
+            // Swap elements in the DOM
+            swap(rects[i], rects[j]);
         }
-        // Reset non-pivot bars back to PURPLE/INDIGO
-        bars[i].style.backgroundColor = "#6366f1"; 
+        
+        // Reset color after comparison
+        rects[j].style.backgroundColor = "#7582f4";
     }
 
-    // Swap pivot into place
-    [array[pivotIndex], array[end]] = [array[end], array[pivotIndex]];
-    bars[pivotIndex].style.height = `${array[pivotIndex]}px`;
-    bars[end].style.height = `${array[end]}px`;
+    // Place pivot in the correct position
+    swap(rects[i + 1], rects[right]);
+    rects[right].style.backgroundColor = "#7582f4";
     
-    return pivotIndex;
+    return i + 1;
+}
+
+function swap(el1, el2) {
+    let tempHeight = el1.style.height;
+    el1.style.height = el2.style.height;
+    el2.style.height = tempHeight;
 }
 
 
