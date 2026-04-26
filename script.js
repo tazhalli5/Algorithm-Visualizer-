@@ -83,55 +83,61 @@ async function quickSort(left, right, bars) {
         await quickSort(pivotIndex + 1, right, bars);
     }
 }
-
 async function partition(left, right, bars) {
     let pivot = array[right];
     
-    // 1. Highlight the pivot in RED
-    bars[right].style.backgroundColor = "#ef4444"; 
+    // Clear any leftover colors from previous partitions in this range
+    for(let k = left; k <= right; k++) {
+        bars[k].style.backgroundColor = "#6366f1";
+    }
+
+    // 1. Highlight the pivot in BRIGHT RED immediately
+    bars[right].style.backgroundColor = "#ff0000"; 
+    
+    // Force a small extra pause just to see the pivot selection
+    await new Promise(resolve => setTimeout(resolve, 200)); 
 
     let i = left - 1;
 
     for (let j = left; j < right; j++) {
-        // 2. Highlight current scanning bar in YELLOW
-        bars[j].style.backgroundColor = "#facc15"; 
+        // Highlight current scanning bar in YELLOW
+        bars[j].style.backgroundColor = "#ffff00"; 
         
         await sleep();
 
         if (array[j] < pivot) {
             i++;
-            // Swap values
             [array[i], array[j]] = [array[j], array[i]];
-            // Update heights
             bars[i].style.height = `${array[i]}px`;
             bars[j].style.height = `${array[j]}px`;
             
-            // Highlight the swap briefly in ORANGE
-            bars[i].style.backgroundColor = "#f97316"; 
+            // Flash the swap in ORANGE
+            bars[i].style.backgroundColor = "#ff8c00";
+            await sleep();
+            bars[i].style.backgroundColor = "#6366f1";
         }
 
-        // Delay so you can see the comparison/swap
-        await sleep();
-
-        // 3. Reset the scanning bar back to Indigo (if it's not the pivot)
-        if (j !== right) bars[j].style.backgroundColor = "#6366f1";
-        if (i >= left) bars[i].style.backgroundColor = "#6366f1";
+        // Reset the scanning bar color unless it's the pivot
+        if (j !== right) {
+            bars[j].style.backgroundColor = "#6366f1";
+        }
     }
 
-    // Final swap of pivot to its correct spot
+    // Final swap of pivot
     [array[i + 1], array[right]] = [array[right], array[i + 1]];
     bars[i + 1].style.height = `${array[i + 1]}px`;
     bars[right].style.height = `${array[right]}px`;
     
-    // Reset old pivot position color
+    // Reset old pivot position
     bars[right].style.backgroundColor = "#6366f1";
     
-    // 4. Mark the NEW pivot position as GREEN (it is now correctly placed)
+    // Mark the NEW position as GREEN (Confirmed Sorted)
     bars[i + 1].style.backgroundColor = "#10b981"; 
     
-    await sleep();
     return i + 1;
 }
+
+
 
 // --- Other Algorithms (Maintained for Stability) ---
 
