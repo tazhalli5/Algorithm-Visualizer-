@@ -23,5 +23,5 @@ https://tazhalli5.github.io/Sort-Visualizer-/
 ```text
 ├── index.html   # Main UI structure
 ├── style.css    # Visual styling and layout
-├── script.js    # Bubble sort logic & DOM manipulation
+├── script.js    # logic & DOM manipulation
 └── README.md    # Project documentation
