@@ -1,3 +1,8 @@
+/**
+ * Algorithm Visualizer 
+ * Features: Bubble, Insertion, Merge, and Quick Sort
+ */
+
 let array = [];
 const container = document.getElementById("container");
 
@@ -8,7 +13,8 @@ const complexities = {
     quick: { time: "O(n log n)", space: "O(log n)" }
 };
 
-// Helper: Safely gets delay. Defaults to 50ms if slider is missing.
+// --- Helper Functions ---
+
 function sleep() {
     const slider = document.getElementById("speedDelay") || document.getElementById("speed");
     const ms = slider ? slider.value : 50;
@@ -30,7 +36,6 @@ function resetArray() {
     if (!container) return;
     container.innerHTML = "";
     array = [];
-    // Responsive bar count
     const count = window.innerWidth < 600 ? 15 : 40;
     
     for (let i = 0; i < count; i++) {
@@ -50,27 +55,25 @@ async function startSorting() {
     const selection = algoSelect.value;
     if (!selection) return alert("Please select an algorithm first!");
 
-    // Disable all UI elements while sorting
     const controls = document.querySelectorAll("button, select, input");
     controls.forEach(c => c.disabled = true);
 
-    // Call the correct function based on dropdown value
-    if (selection === "bubble") await bubbleSort();
-    else if (selection === "insertion") await insertionSort();
-    else if (selection === "merge") await mergeSort();
-    else if (selection === "quick") await quickSort();
+    const bars = document.getElementsByClassName("bar");
 
-    // Re-enable UI
+    if (selection === "bubble") await bubbleSort(bars);
+    else if (selection === "insertion") await insertionSort(bars);
+    else if (selection === "merge") await mergeSort(bars);
+    else if (selection === "quick") await quickSort(0, array.length - 1, bars);
+
     controls.forEach(c => c.disabled = false);
 }
 
-// --- Algorithms ---
+// --- Sorting Algorithms ---
 
-async function bubbleSort() {
-    let bars = document.getElementsByClassName("bar");
+async function bubbleSort(bars) {
     for (let i = 0; i < array.length - 1; i++) {
         for (let j = 0; j < array.length - i - 1; j++) {
-            bars[j].style.backgroundColor = "#ef4444"; // Red for compare
+            bars[j].style.backgroundColor = "#ef4444"; 
             bars[j+1].style.backgroundColor = "#ef4444";
             await sleep();
             if (array[j] > array[j+1]) {
@@ -78,16 +81,15 @@ async function bubbleSort() {
                 bars[j].style.height = `${array[j]}px`;
                 bars[j+1].style.height = `${array[j+1]}px`;
             }
-            bars[j].style.backgroundColor = "#6366f1"; // Reset to Indigo
+            bars[j].style.backgroundColor = "#6366f1"; 
             bars[j+1].style.backgroundColor = "#6366f1";
         }
-        bars[array.length - i - 1].style.backgroundColor = "#10b981"; // Green for sorted
+        bars[array.length - i - 1].style.backgroundColor = "#10b981"; 
     }
     bars[0].style.backgroundColor = "#10b981";
 }
 
-async function insertionSort() {
-    let bars = document.getElementsByClassName("bar");
+async function insertionSort(bars) {
     for (let i = 1; i < array.length; i++) {
         let key = array[i];
         let j = i - 1;
@@ -95,7 +97,7 @@ async function insertionSort() {
         while (j >= 0 && array[j] > key) {
             array[j + 1] = array[j];
             bars[j + 1].style.height = `${array[j + 1]}px`;
-            bars[j + 1].style.backgroundColor = "#f59e0b"; // Orange for moving
+            bars[j + 1].style.backgroundColor = "#f59e0b"; 
             j--;
             await sleep();
         }
@@ -105,22 +107,20 @@ async function insertionSort() {
     }
 }
 
-async function mergeSort() {
-    await mSort(0, array.length - 1);
-    let bars = document.getElementsByClassName("bar");
+async function mergeSort(bars) {
+    await mSort(0, array.length - 1, bars);
     for (let bar of bars) bar.style.backgroundColor = "#10b981";
 }
 
-async function mSort(start, end) {
+async function mSort(start, end, bars) {
     if (start >= end) return;
     let mid = Math.floor((start + end) / 2);
-    await mSort(start, mid);
-    await mSort(mid + 1, end);
-    await merge(start, mid, end);
+    await mSort(start, mid, bars);
+    await mSort(mid + 1, end, bars);
+    await merge(start, mid, end, bars);
 }
 
-async function merge(start, mid, end) {
-    let bars = document.getElementsByClassName("bar");
+async function merge(start, mid, end, bars) {
     let left = array.slice(start, mid + 1);
     let right = array.slice(mid + 1, end + 1);
     let i = 0, j = 0, k = start;
@@ -146,64 +146,46 @@ async function merge(start, mid, end) {
         k++;
     }
 }
-/**
- * Quick Sort Implementation with Visualization
- * @param {Array} rects - The DOM elements representing the bars
- * @param {number} left - Starting index
- * @param {number} right - Ending index
- */
-async function quickSort(rects, left, right) {
+
+async function quickSort(left, right, bars) {
     if (left < right) {
-        // Find the partition index
-        let pivotIndex = await partition(rects, left, right);
-        
-        // Recursively sort elements before and after partition
-        await quickSort(rects, left, pivotIndex - 1);
-        await quickSort(rects, pivotIndex + 1, right);
+        let pivotIndex = await partition(left, right, bars);
+        await quickSort(left, pivotIndex - 1, bars);
+        await quickSort(pivotIndex + 1, right, bars);
     }
-    // Once finished, ensure all bars are the primary color
-    if (left === 0 && right === rects.length - 1) {
-        rects.forEach(rect => rect.style.backgroundColor = "#7582f4");
+    // Set all to green when final range is reached
+    if (left === 0 && right === array.length - 1) {
+        for (let bar of bars) bar.style.backgroundColor = "#10b981";
     }
 }
 
-async function partition(rects, left, right) {
-    // Picking the rightmost element as pivot
-    let pivotValue = parseInt(rects[right].style.height);
-    rects[right].style.backgroundColor = "red"; // Highlight Pivot
+async function partition(left, right, bars) {
+    let pivot = array[right];
+    bars[right].style.backgroundColor = "#ef4444"; // Pivot color
 
     let i = left - 1;
-
     for (let j = left; j < right; j++) {
-        // Highlight current comparison
-        rects[j].style.backgroundColor = "yellow";
-        
-        // Delay for visualization based on your speed slider
-        await new Promise(resolve => setTimeout(resolve, speed));
+        bars[j].style.backgroundColor = "#f59e0b"; // Scanning color
+        await sleep();
 
-        if (parseInt(rects[j].style.height) < pivotValue) {
+        if (array[j] < pivot) {
             i++;
-            // Swap elements in the DOM
-            swap(rects[i], rects[j]);
+            [array[i], array[j]] = [array[j], array[i]];
+            bars[i].style.height = `${array[i]}px`;
+            bars[j].style.height = `${array[j]}px`;
         }
-        
-        // Reset color after comparison
-        rects[j].style.backgroundColor = "#7582f4";
+        bars[j].style.backgroundColor = "#6366f1"; 
     }
 
-    // Place pivot in the correct position
-    swap(rects[i + 1], rects[right]);
-    rects[right].style.backgroundColor = "#7582f4";
+    [array[i + 1], array[right]] = [array[right], array[i + 1]];
+    bars[i + 1].style.height = `${array[i + 1]}px`;
+    bars[right].style.height = `${array[right]}px`;
+    
+    bars[right].style.backgroundColor = "#6366f1";
+    bars[i + 1].style.backgroundColor = "#10b981"; // Pivot is now in sorted position
     
     return i + 1;
 }
 
-function swap(el1, el2) {
-    let tempHeight = el1.style.height;
-    el1.style.height = el2.style.height;
-    el2.style.height = tempHeight;
-}
-
-
-// Ensure the first array is drawn when page loads
 document.addEventListener("DOMContentLoaded", resetArray);
+                
