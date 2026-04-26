@@ -3,20 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sort Visualizer</title>
+    <title>Sorting Visualizer Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Sort Visualizer</h1>
-    
-    <div id="container"></div>
-<div class="controls">
-    <button onclick="resetArray()">Generate New Array</button>
-    <button onclick="bubbleSort()" id="sortBtn">Bubble Sort</button>
-    <button onclick="insertionSort()" id="insertionBtn">Insertion Sort</button>
-    <button onclick="mergeSort()" id="mergeBtn">Merge Sort</button>
-</div>
-    
+    <header>
+        <h1>Sorting Visualizer</h1>
+        <div class="dashboard">
+            <div class="stat-box">
+                <span class="label">Time Complexity</span>
+                <span id="time-complexity">-</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">Space Complexity</span>
+                <span id="space-complexity">-</span>
+            </div>
+        </div>
+    </header>
+
+    <main id="container"></main>
+
+    <div class="toolbar">
+        <button onclick="resetArray()" id="resetBtn">New Array</button>
+        
+        <div class="divider"></div>
+        
+        <select id="algoSelect" onchange="updateComplexityInfo()">
+            <option value="" disabled selected>Select Algorithm</option>
+            <option value="bubble">Bubble Sort</option>
+            <option value="insertion">Insertion Sort</option>
+            <option value="merge">Merge Sort</option>
+        </select>
+        
+        <button onclick="startSorting()" id="startBtn">Visualize</button>
+
+        <div class="divider"></div>
+
+        <div class="speed-control">
+            <label>Speed</label>
+            <input type="range" id="speedDelay" min="10" max="400" value="100">
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
