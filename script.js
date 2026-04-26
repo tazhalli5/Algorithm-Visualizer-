@@ -8,24 +8,31 @@ const complexities = {
     quick: { time: "O(n log n)", space: "O(log n)" }
 };
 
-// Helper: Dynamically gets the delay from slider
+// Helper: Safely gets delay. Defaults to 50ms if slider is missing.
 function sleep() {
-    const ms = document.getElementById("speedDelay").value;
+    const slider = document.getElementById("speedDelay") || document.getElementById("speed");
+    const ms = slider ? slider.value : 50;
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function updateComplexityInfo() {
     const selection = document.getElementById("algoSelect").value;
-    if (complexities[selection]) {
-        document.getElementById("time-complexity").innerText = complexities[selection].time;
-        document.getElementById("space-complexity").innerText = complexities[selection].space;
+    const timeDiv = document.getElementById("time-complexity");
+    const spaceDiv = document.getElementById("space-complexity");
+
+    if (complexities[selection] && timeDiv && spaceDiv) {
+        timeDiv.innerText = complexities[selection].time;
+        spaceDiv.innerText = complexities[selection].space;
     }
 }
 
 function resetArray() {
+    if (!container) return;
     container.innerHTML = "";
     array = [];
+    // Responsive bar count
     const count = window.innerWidth < 600 ? 15 : 40;
+    
     for (let i = 0; i < count; i++) {
         let val = Math.floor(Math.random() * 250) + 10;
         array.push(val);
@@ -37,17 +44,23 @@ function resetArray() {
 }
 
 async function startSorting() {
-    const selection = document.getElementById("algoSelect").value;
+    const algoSelect = document.getElementById("algoSelect");
+    if (!algoSelect) return alert("Select menu not found!");
+    
+    const selection = algoSelect.value;
     if (!selection) return alert("Please select an algorithm first!");
 
+    // Disable all UI elements while sorting
     const controls = document.querySelectorAll("button, select, input");
     controls.forEach(c => c.disabled = true);
 
+    // Call the correct function based on dropdown value
     if (selection === "bubble") await bubbleSort();
     else if (selection === "insertion") await insertionSort();
     else if (selection === "merge") await mergeSort();
     else if (selection === "quick") await quickSort();
 
+    // Re-enable UI
     controls.forEach(c => c.disabled = false);
 }
 
@@ -57,7 +70,7 @@ async function bubbleSort() {
     let bars = document.getElementsByClassName("bar");
     for (let i = 0; i < array.length - 1; i++) {
         for (let j = 0; j < array.length - i - 1; j++) {
-            bars[j].style.backgroundColor = "#ef4444";
+            bars[j].style.backgroundColor = "#ef4444"; // Red for compare
             bars[j+1].style.backgroundColor = "#ef4444";
             await sleep();
             if (array[j] > array[j+1]) {
@@ -65,10 +78,10 @@ async function bubbleSort() {
                 bars[j].style.height = `${array[j]}px`;
                 bars[j+1].style.height = `${array[j+1]}px`;
             }
-            bars[j].style.backgroundColor = "#6366f1";
+            bars[j].style.backgroundColor = "#6366f1"; // Reset to Indigo
             bars[j+1].style.backgroundColor = "#6366f1";
         }
-        bars[array.length - i - 1].style.backgroundColor = "#10b981";
+        bars[array.length - i - 1].style.backgroundColor = "#10b981"; // Green for sorted
     }
     bars[0].style.backgroundColor = "#10b981";
 }
@@ -82,7 +95,7 @@ async function insertionSort() {
         while (j >= 0 && array[j] > key) {
             array[j + 1] = array[j];
             bars[j + 1].style.height = `${array[j + 1]}px`;
-            bars[j + 1].style.backgroundColor = "#f59e0b";
+            bars[j + 1].style.backgroundColor = "#f59e0b"; // Orange for moving
             j--;
             await sleep();
         }
@@ -137,12 +150,16 @@ async function merge(start, mid, end) {
 async function quickSort() {
     let bars = document.getElementsByClassName("bar");
     await qSort(0, array.length - 1, bars);
-    for (let i = 0; i < bars.length; i++) bars[i].style.backgroundColor = "#10b981";
+    // Success finish
+    for (let i = 0; i < bars.length; i++) {
+        bars[i].style.backgroundColor = "#10b981";
+    }
 }
 
 async function qSort(start, end, bars) {
     if (start >= end) return;
     let index = await partition(start, end, bars);
+    // Sequential recursion for animation stability
     await qSort(start, index - 1, bars);
     await qSort(index + 1, end, bars);
 }
@@ -150,10 +167,10 @@ async function qSort(start, end, bars) {
 async function partition(start, end, bars) {
     let pivotValue = array[end];
     let pivotIndex = start;
-    bars[end].style.backgroundColor = "#ef4444";
+    bars[end].style.backgroundColor = "#ef4444"; // Red pivot
 
     for (let i = start; i < end; i++) {
-        bars[i].style.backgroundColor = "#f59e0b";
+        bars[i].style.backgroundColor = "#f59e0b"; // Scanning color
         await sleep();
         if (array[i] < pivotValue) {
             [array[i], array[pivotIndex]] = [array[pivotIndex], array[i]];
@@ -170,5 +187,5 @@ async function partition(start, end, bars) {
     return pivotIndex;
 }
 
-// Initial array generation on page load
-resetArray();
+// Ensure the first array is drawn when page loads
+document.addEventListener("DOMContentLoaded", resetArray);
