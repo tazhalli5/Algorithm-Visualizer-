@@ -1,4 +1,4 @@
-# 📊 Sort visualizer 
+# 📊 Algorithm visualizer 
 
 A professional, high-performance web-based tool designed to provide a real-time visual exploration of fundamental sorting algorithms. This project serves as an educational dashboard to understand both the visual behavior and the mathematical efficiency (Big O) of data structures.
 
