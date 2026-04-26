@@ -4,7 +4,8 @@ const container = document.getElementById("container");
 const complexities = {
     bubble: { time: "O(n²)", space: "O(1)" },
     insertion: { time: "O(n²)", space: "O(1)" },
-    merge: { time: "O(n log n)", space: "O(n)" }
+    merge: { time: "O(n log n)", space: "O(n)" },
+    quick: { time: "O(n log n)", space: "O(log n)" }
 };
 
 // Helper: Dynamically gets the delay from slider
@@ -43,6 +44,7 @@ async function startSorting() {
     if (selection === "bubble") await bubbleSort();
     if (selection === "insertion") await insertionSort();
     if (selection === "merge") await mergeSort();
+    if (selection === "quick") await quickSort();
 
     controls.forEach(c => c.disabled = false);
 }
@@ -129,6 +131,57 @@ async function merge(start, mid, end) {
         bars[k].style.height = `${array[k]}px`;
         k++;
     }
+}
+async function quickSort() {
+    let bars = document.getElementsByClassName("bar");
+    await qSort(0, array.length - 1, bars);
+    // Turn all bars green at the end
+    for (let i = 0; i < bars.length; i++) {
+        bars[i].style.backgroundColor = "#10b981";
+    }
+}
+
+async function qSort(start, end, bars) {
+    if (start >= end) {
+        if (start >= 0 && start < bars.length) bars[start].style.backgroundColor = "#10b981";
+        return;
+    }
+
+    let index = await partition(start, end, bars);
+    
+    // Recursively sort left and right
+    await Promise.all([
+        qSort(start, index - 1, bars),
+        qSort(index + 1, end, bars)
+    ]);
+}
+
+async function partition(start, end, bars) {
+    let pivotValue = array[end];
+    let pivotIndex = start;
+    bars[end].style.backgroundColor = "#ef4444"; // Highlight pivot
+
+    for (let i = start; i < end; i++) {
+        bars[i].style.backgroundColor = "#f59e0b"; // Comparing element
+        await sleep();
+
+        if (array[i] < pivotValue) {
+            // Swap values
+            [array[i], array[pivotIndex]] = [array[pivotIndex], array[i]];
+            bars[i].style.height = `${array[i]}px`;
+            bars[pivotIndex].style.height = `${array[pivotIndex]}px`;
+            pivotIndex++;
+        }
+        bars[i].style.backgroundColor = "#6366f1"; // Reset color
+    }
+
+    // Swap pivot into place
+    [array[pivotIndex], array[end]] = [array[end], array[pivotIndex]];
+    bars[pivotIndex].style.height = `${array[pivotIndex]}px`;
+    bars[end].style.height = `${array[end]}px`;
+    
+    bars[pivotIndex].style.backgroundColor = "#10b981"; // Pivot is now in correct spot
+    return pivotIndex;
 }
 
 resetArray();
