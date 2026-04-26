@@ -33,6 +33,15 @@ header { padding: 20px; text-align: center; }
 
 .label { color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; }
 
+.nav {
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  flex-wrap: wrap;       /* This is the magic line for mobile! */
+  gap: 10px;             
+  padding: 10px;
+}
+
 #container {
     display: flex;
     justify-content: center;
