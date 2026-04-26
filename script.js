@@ -131,7 +131,7 @@ async function merge(start, mid, end) {
         bars[k].style.height = `${array[k]}px`;
         k++;
     }
-}
+
 }
 async function quickSort() {
     let bars = document.getElementsByClassName("bar");
@@ -185,5 +185,5 @@ async function partition(start, end, bars) {
     return pivotIndex;
 
 }
-
+}
 resetArray();
