@@ -4,7 +4,7 @@ A professional, high-performance web-based tool designed to provide a real-time 
 
 # 🚀 Key Features
 
-* **Multi-Algorithm Suite**: Real-time visualization of **Bubble Sort**, **Insertion Sort**, and **Merge Sort**.
+* **Multi-Algorithm Suite**: Real-time visualization of **Bubble Sort**, **Insertion Sort**,**Merge Sort**,and **Quick Sort**.
 * **Dynamic Complexity Dashboard**: Automatically displays **Time Complexity** and **Space Complexity** for the selected algorithm to bridge the gap between code and theory.
 * **Real-Time Performance Control**: Integrated speed slider allowing users to adjust the animation delay dynamically during execution.
 * **Responsive Engine**: A custom-built visualization container that adjusts the data set size based on the user's device (Mobile vs. Desktop).
