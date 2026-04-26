@@ -32,7 +32,7 @@ function resetArray() {
         bar.classList.add("bar");
         container.appendChild(bar);
     }
-}
+
 
 async function startSorting() {
     const selection = document.getElementById("algoSelect").value;
@@ -182,6 +182,7 @@ async function partition(start, end, bars) {
     
     bars[pivotIndex].style.backgroundColor = "#10b981"; // Pivot is now in correct spot
     return pivotIndex;
+}
 }
 
 resetArray();
