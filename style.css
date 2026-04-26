@@ -50,20 +50,31 @@ header { padding: 20px; text-align: center; }
     transition: 0.1s height ease;
 }
 
+
 .toolbar {
     position: fixed;
     bottom: 30px;
-    background: rgba(30, 41, 59, 0.9);
-    backdrop-filter: blur(12px);
-    padding: 15px 30px;
-    border-radius: 100px;
+    left: 50%;
+    transform: translateX(-50%); 
     display: flex;
     align-items: center;
-    gap: 20px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255,255,255,0.1);
+    justify-content: center;
+    gap: 20px;              
+    padding: 15px 30px;
+    background: rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: fit-content;
+    max-width: 90vw;         
 }
 
+
+button, select {
+    padding: 10px 20px;
+    border-radius: 50px;
+    white-space: nowrap;   
+}
 
 button, select {
     background: #6366f1; 
