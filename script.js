@@ -67,7 +67,7 @@ async function startSorting() {
     else if (selection === "merge") await mergeSort(bars);
     else if (selection === "quick") {
         await quickSort(0, array.length - 1, bars);
-        // Ensure all are green at the very end
+        // Ensures ll are green at the very end
         for (let bar of bars) bar.style.backgroundColor = "#10b981";
     }
 
